@@ -13,6 +13,7 @@ body {
 }
 
 h1,h3{
+  font-family: 'Abril Fatface', cursive;
   color: #fff;
   text-shadow: #00204a;
   padding: 5px;
@@ -55,6 +56,7 @@ input[type="checkbox"] {
 }
 
 p {
+  font-family: 'Abril Fatface', cursive;
   padding: 5px;
   font-size: 20px;
   font-weight: 250;
@@ -74,6 +76,7 @@ button {
 }
 
 input[type="text"] {
+  font-family: 'Abril Fatface', cursive;
   text-align: center;
   height: 50px;
   width: 200px;

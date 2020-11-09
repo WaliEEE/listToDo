@@ -1,23 +1,25 @@
 <%- include("header") -%>
 
 <div class="box" id="heading">
-    <h1><%=list_page%></h1>
+    <h1><%=heading%></h1>
 </div>
 
 <div class="box">
 
-    <% for(var i=0; i<item.length; i++) { %>
-    <div class="item">
-        <input type="checkbox">
-        <p><%=item[i]%></p>
-    </div>
-    <% } %>
+    <% item.forEach((single) => { %>
+    <form action="/delete" method="POST">
+        <div class="item">
+            <input type="checkbox" name="single_item" value="<%=single._id%>" onchange="this.form.submit()">
+            <p><%=single.name%></p>
+        </div>
+        <input type="hidden" name="hiddenList" value="<%=heading%>">
+    </form>
+    <% }) %>
 
     <form class="item" action="/" method="POST">
-        <input type="text" name="nItem" placeholder="Add Item" autocomplete="off">
-        <button type="submit" name="list" value="<%=list_page%>">+</button>
+        <input type="text" name="n_Item" placeholder="Add Item" autocomplete="off">
+        <button type="submit" name="list" value="<%=heading%>">+</button>
     </form>
-
 </div>
 
 <%- include("footer") -%> 

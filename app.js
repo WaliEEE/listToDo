@@ -1,13 +1,14 @@
-//Node Modules
+/****************Node Modules***********************/
 const express = require("express");
 const bodyParser = require("body-parser");
+const mango = require("mongoose");
+var _ = require("lodash");
 const dateMod = require(__dirname+"/date.js"); //custom module
+
 const app = express();
 
 app.set("view engine", "ejs");
-
 app.use(bodyParser.urlencoded({extended: true}));
-
 app.use(express.static("public"))
 
 app.listen(3000, (req, res) => 
@@ -15,58 +16,148 @@ app.listen(3000, (req, res) =>
   console.log("Server Started");
 });
 
-//declaring arrays
-const items = ["Buy Food","Eat Food","Drink!!!"]
-const workItems = ["Playing Football"];
 
 
-//Homepage(/) Appearance
+/****************Create DataBase(S)*******************/
+mango.connect("mongodb://localhost:27017/List", {useNewUrlParser: true});
+
+//Create 2 Schemas
+const ItemSchema = 
+{
+  name: String
+}
+
+const ListSchema =
+{
+  name: String,
+  items: [ItemSchema]
+}
+
+//Create 2 Models
+const item = mango.model("Item", ItemSchema); 
+const list = mango.model("List", ListSchema); 
+
+//Now Create Instances from Model
+const item1 = new item({ name: "Playing FootBall"});
+const item2 = new item({ name: "Playing Cricket"});
+const item3 = new item({ name: "Eating Burger"});
+
+const defItem = [item1,item2,item3]; //Collect all inside an Array
+
+
+
+
+/********************HomePage************************/
 app.get("/", (req, res) => 
 {
-  //Export from Custom Module
-   const day = dateMod.getDate()
+  const day = dateMod.getDate();
 
-  //rendering from views (EJS files)
-  res.render("list", { list_page: day, item: items }); 
-  //format({keyword: value})
+  item.find({}, (err,foundItem) => 
+  {
+      if (foundItem.length === 0) 
+      {
+        item.insertMany(defItem);
+        res.redirect("/");  
+      }
+      else
+      {
+        res.render("list", { heading: "Home", item: foundItem });  
+      }
+ });
 });
 
 
-//work page(Template)
-app.get("/work", (req,res) => 
+
+/****************Custom_Page*******************/
+app.get("/:customDir", (req, res) => 
 {
-  res.render("list", { list_page: "Work-List", item: workItems });
+  const day = dateMod.getDate();
+  
+  const dir = _.capitalize(req.params.customDir);
+
+  list.findOne({name: dir}, (err, foundList) => 
+  {
+    if (!err) 
+    {
+      if (!foundList) 
+      {
+        //then create new list
+        const list_x = new list
+        ({
+          name: dir,
+          items: defItem,
+        });
+        list_x.save();
+        res.redirect(`/${list_x.name}`);
+      } 
+      else 
+      {
+        res.render("list", { heading: foundList.name, item: foundList.items});
+      }
+    }
+  })
 })
 
 
-//about page(Template)
-app.get("/about", (req,res) => 
-{
- res.render("about");
-})
 
-
-//For Any kind of Send/Post 
-app.post("/", (req,res) => 
+/**************Submit_Post******************/
+app.post("/", (req, res) => 
 {
   // body-parsing
-  let newItem = req.body.nItem;  
+  let form_item = req.body.n_Item;
+  let form_list = req.body.list;
 
-  if (newItem !== "") 
+  const item_x = new item    //like item1/2/3
+  ({
+    name: form_item
+  });
+
+  if(form_list === "Home")
   {
-    //list=name of button(Form) & value==="Work-List")
-    if (req.body.list === "Work-List")
-    {
-      workItems.push(newItem);
-      res.redirect("/work");
-    } 
-    else 
-    {
-      items.push(newItem);
-      res.redirect("/");
-    }
+    item_x.save();
+    res.redirect("/");
   }
-}) 
+  else
+  {
+    list.findOne({name: form_list}, (err, foundList) => 
+    {
+     foundList.items.push(item_x);
+     foundList.save();
+     res.redirect(`/${form_list}`);
+    }) 
+  }
+}); 
+
+
+
+/***************Delete_Post**************/
+app.post("/delete", (req,res) => 
+{
+  const id_num = req.body.single_item;
+  const hidden = req.body.hiddenList;
+  
+  if (hidden === "Home") 
+  {
+    item.findByIdAndRemove(id_num, (err) => 
+    {
+      if (err) 
+      console.log("Failed");
+      else 
+      console.log("Success");
+    });
+    res.redirect("/");
+  }
+  else
+  {
+  list.findOneAndUpdate({name: hidden}, {$pull: {items: {_id: id_num}}}, (err, foundList) => 
+  {
+    if(!err)
+    {
+      res.redirect(`/${hidden}`);
+    }
+  });
+  }
+});
 
 
 
