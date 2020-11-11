@@ -12,21 +12,21 @@ Clone this repository to your local machine
 
 ### Setup Datebase
 
-**Create and use todo-sequelize database via MongoDB atlas*
+Create and use todo-sequelize database via MongoDB atlas
 
-** Install packages via npm**
+## Install packages via npm**
 
 ```
 $ npm install
 ```
 
-** Create .env file**
+## Create .env file**
 
 ```
 $ touch .env
 ```
 
-** Activate the server**
+## Activate the server**
 
 ```
 > App is running on port 3000!
@@ -35,8 +35,8 @@ $ touch .env
 You may visit the application on browser with the URL: http://localhost:3000
 
 
-# Using Node.js NPM Packages
-# Using Template aka EJS 
-# Public Static folder
-# MongoDB atlas for Database Cluster
-# Setup with Git & Heroku to Deploy on Server
+## Use of Node & Express JS
+## Use of Template aka EJS 
+## Public Static folder
+## MongoDB atlas for Database Cluster
+## Setup with Git & Heroku to Deploy on Server
