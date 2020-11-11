@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mango = require("mongoose");
 var _ = require("lodash");
+const { update } = require("lodash");
 const dateMod = require(__dirname+"/date.js"); //custom module
 
 const app = express();
@@ -19,7 +20,7 @@ app.listen(3000, (req, res) =>
 
 
 /****************Create DataBase(S)*******************/
-mango.connect("mongodb://localhost:27017/List", {useNewUrlParser: true});
+mango.connect("mongodb+srv://admin-waleee:godofwar3@clusterwaleee.steez.mongodb.net/Test?retryWrites=true&w=majority/List",{ useNewUrlParser: true }, { useUnifiedTopology: true });
 
 //Create 2 Schemas
 const ItemSchema = 
@@ -61,7 +62,7 @@ app.get("/", (req, res) =>
       }
       else
       {
-        res.render("list", { heading: "Home", item: foundItem });  
+        res.render("list", { heading: "Home", item: foundItem , time: day});  
       }
  });
 });
@@ -92,7 +93,7 @@ app.get("/:customDir", (req, res) =>
       } 
       else 
       {
-        res.render("list", { heading: foundList.name, item: foundList.items});
+        res.render("list", { heading: foundList.name, item: foundList.items, time: day});
       }
     }
   })
@@ -140,22 +141,23 @@ app.post("/delete", (req,res) =>
   {
     item.findByIdAndRemove(id_num, (err) => 
     {
-      if (err) 
-      console.log("Failed");
-      else 
-      console.log("Success");
+      if (!err) 
+      {
+        console.log("Success!");
+      }
+      res.redirect("/");
     });
-    res.redirect("/");
-  }
-  else
+  } 
+  else 
   {
-  list.findOneAndUpdate({name: hidden}, {$pull: {items: {_id: id_num}}}, (err, foundList) => 
-  {
-    if(!err)
+    list.findOneAndUpdate({name: hidden }, {$pull: {items: {_id: id_num }}}, (err, foundList) => 
     {
-      res.redirect(`/${hidden}`);
-    }
-  });
+        if (!err) 
+        {
+          console.log("Success!");
+        }
+        res.redirect(`/${hidden}`);
+    });
   }
 });
 

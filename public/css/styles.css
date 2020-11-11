@@ -12,9 +12,16 @@ body {
 
 }
 
-h1,h3{
+h1{
   font-family: 'Abril Fatface', cursive;
   color: #fff;
+  text-shadow: #00204a;
+  padding: 5px;
+}
+
+h3{
+  font-family: 'Cinzel Decorative', cursive;
+  color: #2fa797;
   text-shadow: #00204a;
   padding: 5px;
 }
