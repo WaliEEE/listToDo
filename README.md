@@ -20,10 +20,10 @@ Create and use todo-sequelize database via MongoDB atlas
 $ npm install
 ```
 
-## Create .env file**
+## Create  .gitignore files**
 
 ```
-$ touch .env
+$ touch .gitignore
 ```
 
 ## Activate the server**
@@ -37,6 +37,5 @@ You may visit the application on browser with the URL: http://localhost:3000
 
 ## Use of Node & Express JS
 ## Use of Template aka EJS 
-## Public Static folder
-## MongoDB atlas for Database Cluster
-## Setup with Git & Heroku to Deploy on Server
+## MongoDB Database Cluster
+## Git & Heroku to Deploy on Server
